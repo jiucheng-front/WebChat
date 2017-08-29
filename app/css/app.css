@@ -42,3 +42,32 @@ body{
 .pull-right{
     float: right;
 }
+/*loginBox*/
+.loginBox{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #999;
+}
+.loginBox,
+.app{
+  max-width: 10rem;
+  left: 50%;
+  transform:translateX(-50%); 
+}
+.loginBox>div{
+  position: absolute;
+  width: 80%;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%,-50%);
+}
+.loginBox input{
+  height: 1.2rem;
+  line-height: 1.2rem;
+  width: 100%;
+  padding-left: .15rem;
+  /*background: transparent;*/
+  border: 1px solid #fff;
+  font-size: .4rem;
+}
