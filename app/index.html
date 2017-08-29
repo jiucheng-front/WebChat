@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>socket.io-chat</title>
+    <script src="js/flexible.js"></script>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    if(clientWidth>=640){
+                        docEl.style.fontSize = '100px';
+                    }else{
+                        docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
+                    }
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { 
+          font: 13px Helvetica, Arial;
+       }
+      form { 
+          background: #000; 
+          padding: 3px; 
+          position: fixed; 
+          bottom: 0; 
+          /*max-width: 640px; */
+          width: 100%;
+          left: 0;
+        }
+      form input { border: 0; padding: 10px; width: 85%; margin-right: 1%;
+        font-size: .24rem; 
+       }
+      form button { width: 14%; background: rgb(130, 224, 255); border: none; 
+      padding: 10px;
+      font-size: .24rem; 
+      }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      /**/
+      .app{
+          margin: 0 auto;
+          position: relative;
+      }
+    </style>
+</head>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  $(function(){
+    var socket = io();
+    $("form").submit(function(){
+        // 1 注入事件让服务端监听该事件
+        socket.emit("chat",$("#m").val());
+        $("#m").val("");
+        return false;
+    });
+    // 注册服务端注入的事件，接收
+    socket.on('chat', function(msg){
+        // console.log(msg);
+        $('#messages').append($('<li>').text(msg));
+    });
+  });
+</script>
+<body>
+    <div id="app" class="app">
+        <ul id="messages"></ul>
+        <form action="">
+            <input id="m" autocomplete="off" /><button id="send">Send</button>
+        </form>
+    </div>
+</body>
+</html>

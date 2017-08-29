@@ -1,0 +1,26 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "description": "web chat application",
+  "main": "index.js",
+  "scripts": {
+    "test": "nothing"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wjf444128852/SimpleChat.git"
+  },
+  "keywords": [
+    "Simple-chat"
+  ],
+  "author": "Nine",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wjf444128852/SimpleChat/issues"
+  },
+  "homepage": "https://github.com/wjf444128852/SimpleChat#readme",
+  "dependencies": {
+    "express": "^4.15.4",
+    "socket.io": "^2.0.3"
+  }
+}
