@@ -30,7 +30,7 @@ io.on("connection",function(socket){
     socket.on("login",function(nickname){
         if (users.indexOf(nickname) > -1) {
             // 2、向客户端注入登录失败事件
-            socket.emit('resetName');
+            socket.emit('signinFailed');
         } else {
             socket.nickname = nickname;
             users.push(nickname);
@@ -39,6 +39,11 @@ io.on("connection",function(socket){
             // 4、向客户端注入系统提示
             io.sockets.emit('system', nickname, users.length, 'login');
         };
+    });
+    // 6、接收客户端发送的消息并处理
+    socket.on('sendMsg', function(msg, color) {
+        // 5、向客户端注入（广播）新文本消息事件
+        socket.broadcast.emit('broadcast', socket.nickname, msg, color);
     });
 });
 // 监听端口

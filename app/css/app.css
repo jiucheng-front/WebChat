@@ -48,12 +48,13 @@ body{
   width: 100%;
   height: 100%;
   background: #999;
+  /* display: none; */
+  z-index: 10;
 }
-.loginBox,
-.app{
+.loginBox{
   max-width: 10rem;
   left: 50%;
-  transform:translateX(-50%); 
+  transform:translateX(-50%);
 }
 .loginBox>div{
   position: absolute;
@@ -67,7 +68,67 @@ body{
   line-height: 1.2rem;
   width: 100%;
   padding-left: .15rem;
-  /*background: transparent;*/
-  border: 1px solid #fff;
   font-size: .4rem;
+  border-radius: .15rem;
+}
+#typeName{
+  background: #fff;
+}
+#submit{
+  background: #B2CFEB;
+  margin-top: .35rem;
+  color: #fff;
+}
+/*tips*/
+#tips{
+  text-align: center;
+  color: #e4393c;
+  margin-bottom: .35rem;
+  font-size: .35rem;
+  display: none;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: -0.9rem;
+}
+/* chatInput */
+.chatInput{
+  width: 100%;
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  padding: .2rem;
+  background: #B2CFEB;
+  max-width: 10rem;
+  transform: translateX(-50%);
+}
+/* message */
+#footer{
+  overflow: hidden;
+}
+.footer textarea,
+.footer span{
+  display: block;
+  float: left;
+}
+#message{
+  resize:none;
+  width: 8rem;
+  overflow-y: hidden;
+  min-height: 1.2rem;
+  font-size: .4rem;
+  color: #808080;
+}
+.footer span{
+  width: 1.4rem;
+  height: 1.2rem;
+  line-height: 1.2rem;
+  margin-left: .2rem;
+  text-align: center;
+  background: #7DD33C;
+  color: #fff;
+}
+/* app */
+.app p{
+  margin:.35rem 0;
 }

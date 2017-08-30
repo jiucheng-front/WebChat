@@ -7,63 +7,33 @@
     <title>socket.io-chat</title>
     <script src="js/flexible.js"></script>
     <link rel="stylesheet" href="css/app.css">
-    <style>
-      form { 
-          background: #000; 
-          padding: 3px; 
-          position: fixed; 
-          bottom: 0; 
-          /*max-width: 640px; */
-          width: 100%;
-          left: 0;
-        }
-      form input { border: 0; padding: 10px; width: 85%; margin-right: 1%;
-        font-size: .24rem; 
-       }
-      form button { width: 14%; background: rgb(130, 224, 255); border: none; 
-      padding: 10px;
-      font-size: .24rem; 
-      }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      /**/
-      .app{
-          margin: 0 auto;
-          position: relative;
-      }
-    </style>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 </head>
 <script src="/socket.io/socket.io.js"></script>
 <!--<script src="https://code.jquery.com/jquery-1.11.1.js"></script>-->
 <script>
-//   $(function(){
-//     var socket = io();
-//     $("form").submit(function(){
-//         // 1 注入事件让服务端监听该事件
-//         socket.emit("chat",$("#m").val());
-//         $("#m").val("");
-//         return false;
-//     });
-//     // 注册服务端注入的事件，接收
-//     socket.on('chat', function(msg){
-//         // console.log(msg);
-//         $('#messages').append($('<li>').text(msg));
-//     });
-//   });
 </script>
 <!---->
 <script src="js/chat.js"></script>
 <body>
-    <!--聊天窗口-->
-    <div id="app" class="app">
-        
-    </div>
     <!--登录窗口-->
     <div id="loginBox" class="loginBox">
         <div>
-            <p id="tips"></p>
-            <input type="text" id="typeName">
+            <p id="tips">用户名已存在，请重新输入！</p>
+            <input type="text" placeholder="随意输入一个用户名~" id="typeName">
+            <input type="submit" value="OK" id="submit">
+        </div>
+    </div>
+    <!--聊天信息-->
+    <div id="app" class="app">
+        
+    </div>
+    <!-- 聊天输入框 -->
+    <div id="chatInput" class="chatInput">
+        <div class="emoji-list"></div>
+        <div class="footer">
+            <textarea name="message" id="message"></textarea>
+            <span id="send">发送</span>
         </div>
     </div>
 </body>
