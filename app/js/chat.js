@@ -1,11 +1,7 @@
 window.onload=function(){
     var chat=new Chat();
     chat.init();
-
 }
-// function getDom(id){
-//     return document.getElementById(id);
-// }
 function Chat(){
     this.socket=null;
 }
@@ -24,9 +20,14 @@ Chat.prototype={
         this.btn=this.getDom("submit");
         // 文本输入框
         this.textarea=this.getDom("message");
+        this.defaultHeight=this.elemStyle(_this.textarea).minHeight;
+        // this.defaultHeight=this.elemStyle(_this.textarea);
         this.sendBtn=this.getDom("send");
         this.app=this.getDom("app");
         // console.log(this.app);
+        // 
+        this.scrollTop=document.body.scrollTop;
+        this.timer=null;
         // 使用 io
         this.socket = io.connect();
         // 建立连接
@@ -66,6 +67,8 @@ Chat.prototype={
                 _this.socket.emit("sendMsg",msg,"#999");
                 // 自己的视图
                 _this.pushHtml(_this.app,"我",msg,"#B2CFEB","right");
+                // 恢复开始高度
+                this.style.height=_this.defaultHeight;
             }else{
                 var height=this.scrollHeight;
                 if( height<150 ){
@@ -76,9 +79,39 @@ Chat.prototype={
                 }
             }
         });
+        // 5 解决移动端获取焦点键盘挡住输入框（此方法时好时坏）
+        // this.bind(this.textarea,"click",function(){
+        //     var target = this;
+        //     setTimeout(function(){
+        //         target.scrollIntoView(true);
+        //     },100);
+        // });
+        // 5.1
+        this.bind(this.textarea,"focus",function(){
+            console.log(document.body.scrollHeight);
+            _this.timer=setInterval(function(){
+                document.body.scrollTop=document.body.scrollHeight;
+            },100);
+        });
+        // 5.2
+        this.bind(this.textarea,"blur",function(){
+            clearInterval(_this.timer);
+            _this.app.scrollTop = _this.app.scrollHeight;
+            // document.body.scrollTop=_this.scrollTop;
+            console.log(_this.scrollTop);
+        });
         // 按钮发送：
         this.bind(this.sendBtn,"click",function(){
-            console.log("a");
+            var msg=_this.textarea.value;
+            if(msg.trim().length != 0){
+                _this.textarea.value="";
+                // 向服务端注册 发送事件
+                _this.socket.emit("sendMsg",msg,"#999");
+                // 自己的视图
+                _this.pushHtml(_this.app,"我",msg,"#B2CFEB","right");
+                // 恢复开始高度
+                _this.textarea.style.height=_this.defaultHeight;
+            }
         });
         // 2.2 接收服务端成功事件
         this.socket.on('loginSuccess', function() {
@@ -126,5 +159,8 @@ Chat.prototype={
         elem.appendChild(p);
         // 默认向上滚动
         elem.scrollTop = elem.scrollHeight;
+    },
+    elemStyle:function(elem){
+        return window.getComputedStyle(elem);
     }
 }

@@ -95,6 +95,7 @@ body{
 .chatInput{
   width: 100%;
   position: fixed;
+  /* position: absolute; */
   left: 50%;
   bottom: 0;
   padding: .2rem;
@@ -131,4 +132,7 @@ body{
 /* app */
 .app p{
   margin:.35rem 0;
+}
+.app{
+  padding-bottom: 1.6rem;
 }
