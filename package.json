@@ -4,7 +4,8 @@
   "description": "web chat application",
   "main": "index.js",
   "scripts": {
-    "test": "nothing"
+    "test": "nothing",
+    "server": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,8 @@
   "dependencies": {
     "express": "^4.15.4",
     "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "opn": "^5.1.0"
   }
 }

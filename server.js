@@ -6,6 +6,11 @@ var http=require("http").Server(app);
 // 2. 导入socket
 var io=require("socket.io")(http);
 
+// 3、使用 opn模块自动打开默认浏览器
+var opn = require('opn');
+var port=3200;
+var uri = 'http://localhost:' + port;
+
 // 指定服務器根目錄
 app.use('/', express.static(__dirname + '/app'));
 // 服务器相应
@@ -52,6 +57,8 @@ io.on("connection",function(socket){
     });
 });
 // 监听端口
-http.listen(3200,function(){
+http.listen(port,function(){
+    // 自动打开浏览器
+    opn(uri);
     console.log("listening on port:3200");
 });

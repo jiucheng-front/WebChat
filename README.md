@@ -4,3 +4,4 @@
 + <code>npm install</code>
 + <code>node index</code>
 + <code>The browser opens http://localhost:3200/</code>
++ ![](./other/2.gif)

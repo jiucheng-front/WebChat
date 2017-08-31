@@ -53,7 +53,7 @@ Chat.prototype={
         });
         // OK 登录按钮
         this.bind(this.btn,"click",function(e){
-            console.log(this);
+            // console.log(this);
             var nickName = _this.username.value;
             // 向服务端注册login事件
             if (nickName.trim().length != 0) {
