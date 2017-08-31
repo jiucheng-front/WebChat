@@ -21,15 +21,19 @@ Chat.prototype={
         // 文本输入框
         this.textarea=this.getDom("message");
         this.defaultHeight=this.elemStyle(_this.textarea).minHeight;
-        // this.defaultHeight=this.elemStyle(_this.textarea);
+        // 发送按钮
         this.sendBtn=this.getDom("send");
+        // 显示输入内容的 DOM
         this.app=this.getDom("app");
         this.emojiBox=this.getDom("emojiBox");
-        // 6 初始化表情
+        // 选择图片按钮
+        this.sendImg=this.getDom("sendImg");
+        // 初始化表情
         this.pushEmoji(_this.emojiBox,45);
         this.emojiBtn=this.getDom("emoji");
-        this.scrollTop=document.body.scrollTop;
+        // 定时器为了解决移动端获取焦点键盘挡住输入框
         this.timer=null;
+        this.scrollTop=document.body.scrollTop;
         // 使用 io
         this.socket = io.connect();
         // 建立连接
@@ -135,11 +139,31 @@ Chat.prototype={
                 _this.textarea.value=_this.textarea.value+'[emoji:' + target.title + ']'; 
             }
         });
-        // 2.2 接收服务端成功事件
+        // 7.1 选择并发送图片
+        this.bind(this.sendImg,"change",function(e){
+            // 如果选择了图片
+            if (this.files.length !=0) {
+                // console.log(this.files);
+                var file = this.files[0];
+                var reader = new FileReader();
+                if(!reader){
+                    _this.pushHtml(_this.app,"友情提示：","暂不支持FileReader");
+                }
+                var color="#999";
+                reader.onload = function(e) {
+                    // e.target.result 二进制,向服务端注册选择图片事件
+                    _this.socket.emit('selectImg', e.target.result,color);
+                    _this.pushImg(_this.app,'我', e.target.result, "#B2CFEB","right");
+                    // console.log(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        // 2.2 监听服务端登录成功事件
         this.socket.on('loginSuccess', function() {
             _this.loginDom.style.display = 'none';
         });
-        // 2.3 接收服务端登录失败
+        // 2.3 监听服务端登录失败
         this.socket.on("signinFailed",function(){
             _this.tips.style.display="block";
             _this.username.value="";
@@ -150,10 +174,14 @@ Chat.prototype={
             _this.pushHtml(_this.app,"系统提示",msg,"#ccc","center");
         });
         // 4、监听服务器注入（广播）新文本消息事件
-        this.socket.on('broadcast', function(username, msg, color) {
+        this.socket.on("broadcast", function(username, msg, color) {
             _this.pushHtml(_this.app,username,msg,color);
         });
-        
+        // 8、监听服务端广播发送图片事件
+        this.socket.on("broadcastImg",function(username,baseData,color){
+            // 接收后渲染除去自己以外的用户，所以 默认(left)没 align参数
+            _this.pushImg(_this.app,username,baseData,color);
+        });
     },
     // 通用绑定事件
     bind:function(elem,eventType,callback){
@@ -216,6 +244,21 @@ Chat.prototype={
             };
         };
         return result;
+    },
+    // 7.2 动态追加渲染 IMG
+    pushImg:function(elem,username,baseData,color,align){
+        var p = document.createElement('p');
+        var date = new Date().toTimeString().substr(0, 8);
+        p.style.color = color || '#999';
+        p.style.textAlign=align || "left";
+        if(align=="right"){
+            p.innerHTML='<img src="'+baseData+'"/>'+'<span class="timeTips">(' + date + ') </span> ：'+ username;
+        }else{
+            p.innerHTML=username+'<span class="timeTips">(' + date + ') </span> ：'+'<img src="'+baseData+'"/>';
+        }
+        elem.appendChild(p);
+        // 默认向上滚动
+        elem.scrollTop = elem.scrollHeight;
     },
     elemStyle:function(elem){
         return window.getComputedStyle(elem);

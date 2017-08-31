@@ -45,6 +45,11 @@ io.on("connection",function(socket){
         // 5、向客户端注入（广播）新文本消息事件
         socket.broadcast.emit('broadcast', socket.nickname, msg, color);
     });
+    //7、接收客户端注入的选择图片事件
+    socket.on('selectImg', function(baseData, color) {
+        // 5、向客户端注入新图片消息事件
+        socket.broadcast.emit('broadcastImg', socket.nickname, baseData, color);
+    });
 });
 // 监听端口
 http.listen(3200,function(){
