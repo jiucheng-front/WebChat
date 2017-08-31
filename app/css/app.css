@@ -55,6 +55,7 @@ body{
   max-width: 10rem;
   left: 50%;
   transform:translateX(-50%);
+  display: none;
 }
 .loginBox>div{
   position: absolute;
@@ -131,8 +132,63 @@ body{
 }
 /* app */
 .app p{
-  margin:.35rem 0;
+  width: 94%;
+  margin:.35rem auto;
+  /* float: left; */
 }
 .app{
-  padding-bottom: 1.6rem;
+  padding-bottom: 2.6rem;
+}
+.app:after{
+  display: table;
+  content: "";
+  clear: both;
+}
+.timeTips{
+  color: #AFDB8E;
+}
+/* emoji-list */
+.emoji-list{
+  margin-bottom: .15rem;
+  position: relative;
+}
+.emoji-list span{
+  float: left;
+  display: block;
+  font-size: .65rem;
+  width: 1.2rem;
+  text-align: center;
+  color: #808080;
+  position: relative;
+}
+.emoji-list span input{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  z-index: 1;
+}
+.emoji-box{
+  position: absolute;
+  width: 100%;
+  left: 0;
+  padding:.2rem;
+  background: #B2CFEB;
+  top: -5.3rem;
+  display: none;
+}
+.emoji-list:after,
+.emoji-box:after{
+  display: table;
+  content: "";
+  clear: both;
+}
+.emoji-box img{
+  margin:0 .13rem;
+  margin-top: .2rem;
+  width: .8rem;
+  float: left;
+  display: block;
 }

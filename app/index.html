@@ -7,6 +7,7 @@
     <title>socket.io-chat</title>
     <script src="js/flexible.js"></script>
     <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/font/iconfont.css">
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 </head>
 <script src="/socket.io/socket.io.js"></script>
@@ -30,7 +31,15 @@
     </div>
     <!-- 聊天输入框 -->
     <div id="chatInput" class="chatInput">
-        <div class="emoji-list"></div>
+        <div id="emojiBox" class="emoji-box"></div>
+        <div class="emoji-list">
+            <span id="font"><i class="iconfont icon-A"></i></span>
+            <span id="emoji"><i class="iconfont icon-emoji"></i></span>
+            <span id="mikes"><i class="iconfont icon-l-mikes"></i></span>
+            <span id="images"><i class="iconfont icon-image"></i><input id="sendImg" type="file"></span>
+            <span id="floder"><i class="iconfont icon-wenjian"></i></span>
+            <span id="packets"><i class="iconfont icon-red-packets"></i></span>
+        </div>
         <div class="footer">
             <textarea name="message" id="message"></textarea>
             <span id="send">发送</span>

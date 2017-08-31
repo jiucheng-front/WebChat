@@ -24,8 +24,10 @@ Chat.prototype={
         // this.defaultHeight=this.elemStyle(_this.textarea);
         this.sendBtn=this.getDom("send");
         this.app=this.getDom("app");
-        // console.log(this.app);
-        // 
+        this.emojiBox=this.getDom("emojiBox");
+        // 6 初始化表情
+        this.pushEmoji(_this.emojiBox,45);
+        this.emojiBtn=this.getDom("emoji");
         this.scrollTop=document.body.scrollTop;
         this.timer=null;
         // 使用 io
@@ -79,6 +81,20 @@ Chat.prototype={
                 }
             }
         });
+        // 按钮发送：
+        this.bind(this.sendBtn,"click",function(){
+            var msg=_this.textarea.value;
+            if(msg.trim().length != 0){
+                _this.textarea.value="";
+                _this.textarea.focus();
+                // 向服务端注册 发送事件
+                _this.socket.emit("sendMsg",msg,"#999");
+                // 自己的视图
+                _this.pushHtml(_this.app,"我",msg,"#B2CFEB","right");
+                // 恢复开始高度
+                _this.textarea.style.height=_this.defaultHeight;
+            }
+        });
         // 5 解决移动端获取焦点键盘挡住输入框（此方法时好时坏）
         // this.bind(this.textarea,"click",function(){
         //     var target = this;
@@ -86,31 +102,37 @@ Chat.prototype={
         //         target.scrollIntoView(true);
         //     },100);
         // });
-        // 5.1
+        // 5.1 获取焦点动态计算 避免键盘挡住输入框
         this.bind(this.textarea,"focus",function(){
-            console.log(document.body.scrollHeight);
+            // console.log(document.body.scrollHeight);
             _this.timer=setInterval(function(){
                 document.body.scrollTop=document.body.scrollHeight;
             },100);
         });
-        // 5.2
+        // 5.2 失去焦点恢复初始或者目前输入的位置(每次最新的输入都在视觉最底部)
         this.bind(this.textarea,"blur",function(){
             clearInterval(_this.timer);
             _this.app.scrollTop = _this.app.scrollHeight;
             // document.body.scrollTop=_this.scrollTop;
-            console.log(_this.scrollTop);
         });
-        // 按钮发送：
-        this.bind(this.sendBtn,"click",function(){
-            var msg=_this.textarea.value;
-            if(msg.trim().length != 0){
-                _this.textarea.value="";
-                // 向服务端注册 发送事件
-                _this.socket.emit("sendMsg",msg,"#999");
-                // 自己的视图
-                _this.pushHtml(_this.app,"我",msg,"#B2CFEB","right");
-                // 恢复开始高度
-                _this.textarea.style.height=_this.defaultHeight;
+        // 6.1 显示表情包
+        this.bind(this.emojiBtn,"click",function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            _this.emojiBox.style.display="block";
+        });
+        // 6.2 隐藏表情包
+        this.bind(document.body,"click",function(e){
+            if(e.target !=_this.emojiBox){
+                _this.emojiBox.style.display="none";
+            }
+        });
+        // 6.3 选择表情包
+        this.bind(this.emojiBox,"click",function(e){
+            var target=e.target;
+            if(target.nodeName.toLowerCase() == 'img'){
+                _this.textarea.focus();
+                _this.textarea.value=_this.textarea.value+'[emoji:' + target.title + ']'; 
             }
         });
         // 2.2 接收服务端成功事件
@@ -125,12 +147,13 @@ Chat.prototype={
         // 3.监听服务器注入系统提示
         this.socket.on("system",function(username,count,type){
             var msg=username+( type=="login" ? "  加入温暖的组织" : "离开了温暖的组织！" );
-            _this.pushHtml(_this.app,"系统提示",msg,"#999","center");
+            _this.pushHtml(_this.app,"系统提示",msg,"#ccc","center");
         });
         // 4、监听服务器注入（广播）新文本消息事件
         this.socket.on('broadcast', function(username, msg, color) {
             _this.pushHtml(_this.app,username,msg,color);
         });
+        
     },
     // 通用绑定事件
     bind:function(elem,eventType,callback){
@@ -145,11 +168,17 @@ Chat.prototype={
     getDom:function(id){
         return document.getElementById(id);
     },
+    // 动态追加HTML
     pushHtml:function(elem,username,msg,color,align) {
         var p=document.createElement("p");
         var date = new Date().toTimeString().substr(0, 8);
         p.style.color = color || '#B2CFEB';
+        // 文字超出1行后，最后一行不太合理！ 需要优化
+        // p.style.float=align || "left";
         p.style.textAlign=align || "left";
+        // 是否有表情：把msg 过滤并替换表情
+        var emojiCount=this.emojiBox.children.length;
+        var msg=this.fetchEmoji(msg,emojiCount);
         // 判断是不是自己
         if(align=="right"){
             p.innerHTML = msg+'<span class="timeTips">(' + date + ') </span> ：'+ username;
@@ -159,6 +188,34 @@ Chat.prototype={
         elem.appendChild(p);
         // 默认向上滚动
         elem.scrollTop = elem.scrollHeight;
+    },
+    // 把eomji图片表情动态添加到html
+    pushEmoji:function(elem,count){
+        var str="";
+        for(var i=0;i<count;i++){
+            var index=i+1;
+            index<10&&(index="0"+index);
+            str+='<img title="'+index+'" src="images/emoji_'+index+'.png" alt="">';
+        }
+        elem.innerHTML=str;
+    },
+    // 正则匹配 emoji 替换为对应的 表情图片
+    fetchEmoji:function(msg,count){
+        var match, result = msg,
+        reg = /\[emoji:\d+\]/g,
+        emojiIndex;
+        while (match = reg.exec(msg)) {
+            // [emoji:38] 从 : 号下标7到 ] 的下标 -1，截取中间的数字
+            emojiIndex = match[0].slice(7, -1);
+            // console.log(match[0]);
+            // console.log(emojiIndex);
+            if (emojiIndex > count) {
+                result = result.replace(match[0], '***');
+            } else {
+                result = result.replace(match[0], '<img src="images/emoji_' + emojiIndex + '.png" />');
+            };
+        };
+        return result;
     },
     elemStyle:function(elem){
         return window.getComputedStyle(elem);
