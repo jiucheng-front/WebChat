@@ -30,6 +30,12 @@ io.on("connection",function(socket){
     });
     // 4断开连接提示
     socket.on("disconnect",function(){
+        if (socket.nickname != null) {
+            //users.splice(socket.userIndex, 1);
+            users.splice(users.indexOf(socket.nickname), 1);
+            // 如果当前用户断开了连接，注入系统提示信息
+            socket.broadcast.emit('system', socket.nickname, users.length, 'signOut');
+        }
         console.log("user disconnected!");
     });
     // 5接收客户端注入的login事件

@@ -10,6 +10,7 @@ Chat.prototype={
     init:function(){
         var _this=this;
         // 1、初始化DOM
+        this.onlineCount=this.getDom("onlineCount");
         // 用户名输入框 DOM
         this.username=this.getDom("typeName");
         // 提示框
@@ -170,8 +171,10 @@ Chat.prototype={
         });
         // 3.监听服务器注入系统提示
         this.socket.on("system",function(username,count,type){
-            var msg=username+( type=="login" ? "  加入温暖的组织" : "离开了温暖的组织！" );
+            var msg=username+( type=="login" ? "  加入温暖的组织" : "  离开了温暖的组织！" );
             _this.pushHtml(_this.app,"系统提示",msg,"#ccc","center");
+            // 显示在线人事
+            _this.onlineCount.innerHTML="当前有："+count+" 在线中...";
         });
         // 4、监听服务器注入（广播）新文本消息事件
         this.socket.on("broadcast", function(username, msg, color) {

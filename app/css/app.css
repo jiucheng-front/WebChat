@@ -192,3 +192,11 @@ body{
   float: left;
   display: block;
 }
+/* onlineCount */
+#onlineCount{
+  text-align: center;
+  height: 1.4rem;
+  line-height: 1.4rem;
+  background: #7DD33C;
+  color: #fff;
+}
