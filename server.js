@@ -10,6 +10,7 @@ var io=require("socket.io")(http);
 var opn = require('opn');
 var port=3200;
 var uri = 'http://localhost:' + port;
+// 要打開直接 opn(uri);
 
 // 指定服務器根目錄
 app.use('/', express.static(__dirname + '/app'));
