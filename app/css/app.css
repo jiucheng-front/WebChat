@@ -23,6 +23,7 @@ body{
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  width: 1.333333rem;
 }
 .flex_child{
   -webkit-box-flex: 1;
